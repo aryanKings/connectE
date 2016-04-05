@@ -321,7 +321,7 @@
 	 			failed("Leave added unsuccess full..");
 	 		}
  		}else{
- 			failed("Leave already Exists");	
+ 			failed("Entered Leave type is already added.");	
  		}
  		
  		
@@ -329,6 +329,7 @@
  
  	$leavesGetResult = "SELECT * FROM LeavesType WHERE companyCode='$companyCode'";
  	$resultGetLeaves = mysql_query($leavesGetResult);
+ 	
  	
  
  ?>
