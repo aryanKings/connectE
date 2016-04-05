@@ -308,16 +308,21 @@
  		$leaveTypeName = htmlspecialchars($_POST['leavetype']);
  		$leaveTypeNumbers = htmlspecialchars($_POST['leavenumber']);
  		
- 		$addLeaveTypeQuery = "INSERT INTO LeavesType(companyCode,leaveName,leaves)VALUES('$companyCode','$leaveTypeName','$leaveTypeNumbers')";
- 		$addLeaveTypeResult = mysql_query($addLeaveTypeQuery);
- 		
- 		if($addLeaveTypeResult == 1){
- 			success("Leave Type has been added successfully.");
-
+ 		$checkTypeLeaveQuery =  "SELECT * FROM LeavesType WHERE companyCode='$companyCode' AND leaveName='$leaveTypeName'";
+ 		$resultCheckTypeLeave = mysql_query($checkTypeLeaveQuery);
+ 		if(mysql_num_rows($resultCheckTypeLeave) <= 0){
+	 		$addLeaveTypeQuery = "INSERT INTO LeavesType(companyCode,leaveName,leaves)VALUES('$companyCode','$leaveTypeName','$leaveTypeNumbers')";
+	 		$addLeaveTypeResult = mysql_query($addLeaveTypeQuery);
+	 		
+	 		if($addLeaveTypeResult == 1){
+	 			success("Leave Type has been added successfully.");
+	
+	 		}else{
+	 			failed("Leave added unsuccess full..");
+	 		}
  		}else{
- 			failed("Leave added unsuccess full..");
+ 			failed("Leave already Exists");	
  		}
- 		
  		
  		
  	}
@@ -325,7 +330,6 @@
  	$leavesGetResult = "SELECT * FROM LeavesType WHERE companyCode='$companyCode'";
  	$resultGetLeaves = mysql_query($leavesGetResult);
  	
- 	$leaves = mysql_fetch_array($resultGetLeaves);
  
  ?>
  
@@ -389,6 +393,9 @@
 				
 				$holidayName = htmlspecialchars($_POST['Holidayname']);
 				$holidayDate = htmlspecialchars($_POST['holidaydate']);
+				
+				
+			
 				
 				$checkHolidayQuery = "SELECT * FROM HolidayList WHERE date='$holidayDate' AND companyCode='$companyCode'";
 				$resultCheckHolday = mysql_query($checkHolidayQuery);
