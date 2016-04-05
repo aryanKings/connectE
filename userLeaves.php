@@ -244,7 +244,7 @@
 							       		<td><?php echo $leaves; ?></td>
 							       		<td><?php echo  $empLeavesUsed;?></td>
 							       		<td><?php echo  $remainingLeaves;?></td>
-							       		<td><center><form   action="UserApplyLeaves.php" method="post"><input type="text" name="remaining" value="<?php echo $remainingLeaves; ?>" > <input type="hidden" name="leaveType" value="<?php echo $leavename; ?>" > <button type="submit"  name="login-submit" id="login-submit" <?php if($remainingLeaves <= 0){ echo "disabled";} ?> class="btn btn-default">Apply</button></form></center></td>
+							       		<td><center><form   action="UserApplyLeaves.php" method="post"><input type="hidden" name="remaining" value="<?php echo $remainingLeaves; ?>" > <input type="hidden" name="leaveType" value="<?php echo $leavename; ?>" > <button type="submit"  name="login-submit" id="login-submit" <?php if($remainingLeaves <= 0){ echo "disabled";} ?> class="btn btn-default">Apply</button></form></center></td>
 							       		</tr>
 							       		
 							      <?php
@@ -269,7 +269,7 @@
                         
                                 if(isset($_POST['userCancel'])){
                                     $elid = htmlspecialchars($_POST['elid']);
-                                    $cancelQuery = "UPDATE empLeaves SET status='Cancelled by user'  WHERE elid='$elid'";
+                                    $cancelQuery = "UPDATE empLeaves SET status='Cancelled by user' , days='0' WHERE elid='$elid'";
                                     $cancelResult = mysql_query($cancelQuery);
                                 }
                         
@@ -331,7 +331,7 @@
                                                             ?>
                                                             
                                                             
-                                                           <td><center><form  action="UserLeaves.php?class=1" method="post" ><input type="hidden" name="elid" value="<?php echo $statusLeaves['elid']; ?>" /><button <?php if($cancelResult){ echo 'disabled';}?> type="submit" name="userCancel" id="statusLeavesCancel"  class="btn btn-default">Cancel</button></form></center></td>
+                                                           <td><center><form  action="UserLeaves.php?class=2" method="post" ><input type="hidden" name="elid" value="<?php echo $statusLeaves['elid']; ?>" /><button <?php if($cancelResult){ echo 'disabled';}?> type="submit" name="userCancel" id="statusLeavesCancel"  class="btn btn-default">Cancel</button></form></center></td>
                                                             
                                                         </tr>
                                             <?php }
@@ -360,8 +360,13 @@
                                                                     $status = htmlspecialchars($_POST['status']);
                                                                     $adminElid = htmlspecialchars($_POST['adminElid']);
                                                                     
-                                                                    $approveUpdateQuery = "UPDATE empLeaves SET status='$status' WHERE elid='$adminElid'";
-                                                                    $approveUpdateResult = mysql_query($approveUpdateQuery);
+                                                                    if(status == 'Rejected'){
+                                                                    	$approveUpdateQuery = "UPDATE empLeaves SET status='$status',days='0' WHERE elid='$adminElid'";
+                                                                    	$approveUpdateResult = mysql_query($approveUpdateQuery);
+                                                                    }else {
+	                                                                    $approveUpdateQuery = "UPDATE empLeaves SET status='$status' WHERE elid='$adminElid'";
+	                                                                    $approveUpdateResult = mysql_query($approveUpdateQuery);
+                                                                    }
                                                                 }
                                 
                                 $alQuery = "SELECT * FROM empLeaves WHERE approvalBy='$userId'";
@@ -396,7 +401,7 @@
 							     <?php
                                         while($alRow = mysql_fetch_array($resultApprove)){?>
                                                     <tr>
-                                                        <form action="UserLeaves.php?class=2" method="post">
+                                                        <form action="UserLeaves.php?class=3" method="post">
                                                         <?php $approvalUID = $alRow['userid'];?>
                                                         <td><?php echo  $approvalUID; ?></td>
                                                         <?php 
