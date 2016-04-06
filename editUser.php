@@ -372,10 +372,10 @@ function checkEmpIdApprove(){
       Approved By
     </label>
   </div>
- <div id="Approving" style="display:none;">
+ <div id="Approving" style="display:<?php if($ApprovedBy == '1'){echo 'block';}else{echo 'none';}?>;">
   <div style="margin-bottom: 12px">
      <label class="radio-inline" for="radios-0">
-      <input type="radio" name="approvings" id="radios-0" value="admin" onclick="validateapproveruserhid()">
+      <input type="radio" name="approvings" id="radios-0" value="admin" <?php if($row['ApprovingEmployeeId'] == ''){echo 'checked';}?> onclick="validateapproveruserhid()">
       Admin
     </label> 
     <label class="radio-inline" for="radios-1">
@@ -385,7 +385,7 @@ function checkEmpIdApprove(){
     </div>
 									
                                     </div>
-                                      <div id="Approvinguser" style="display:none;">
+                                      <div id="Approvinguser" style="display:<?php if($row['ApprovingEmployeeId'] == ''){echo 'none';}else{echo 'block';}?>;">
                                       <center> <p style="color:red" id="msgApprove"></p></center>
 									<label for="EmployeeId">Approver User id*</label>
                             <div style="margin-bottom: 12px" class="input-group">
