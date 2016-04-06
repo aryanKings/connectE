@@ -878,14 +878,22 @@ $snapresultQuery = mysql_query($snapquery);
 			?>
 			
 			
-			 <?php while($snaprow = mysql_fetch_array($snapresultQuery)){ ?>
+			 <?php
+			 
+			 	if(mysql_num_rows($snapresultQuery)> 0){
+			 		while($snaprow = mysql_fetch_array($snapresultQuery)){ ?>
 							<tr>
 								 <td><?php echo $snaprow['UserId'];?></td> 
 								 <td><?php echo $snaprow['UserName'];?></td> 
 								 <td><?php echo $snaprow['status'];?></td>
 							</tr>
 							  
-								 <?php } ?>
+								 <?php } 
+								 
+			 	}else{
+			 		echo  "<tr><td>No Records to display</td></tr>";
+			 	}
+								 ?>
 			</tbody>
 		  </table>
 						
