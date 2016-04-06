@@ -224,32 +224,35 @@
 							        -->
 							       	
 							       	<?php 
-							       	
-							       	while($leavesType = mysql_fetch_array($resultLeaveType)){
-							       		$leavename = $leavesType['leaveName'];
-							       		$leaves = intval($leavesType['leaves']);
-							       		$empLeavesQuery  = "SELECT * FROM empLeaves WHERE userid='$userId' AND leavetype='$leavename' AND code='$companyCode'";
-							       		$empLeavesResult = mysql_query($empLeavesQuery);
-							       		$empLeavesUsed = 0;
-							       		while($empLeaveCal = mysql_fetch_array($empLeavesResult)){
-							       			$empLeavesUsed += intval($empLeaveCal['days']);
-							       		}
-							       		
-							       		$remainingLeaves = $leaves - $empLeavesUsed;
-							       		
-							       		
+								       
+							       		if(mysql_num_rows($resultLeaveType) > 0){
+									       	while($leavesType = mysql_fetch_array($resultLeaveType)){
+									       		$leavename = $leavesType['leaveName'];
+									       		$leaves = intval($leavesType['leaves']);
+									       		$empLeavesQuery  = "SELECT * FROM empLeaves WHERE userid='$userId' AND leavetype='$leavename' AND code='$companyCode'";
+									       		$empLeavesResult = mysql_query($empLeavesQuery);
+									       		$empLeavesUsed = 0;
+									       		while($empLeaveCal = mysql_fetch_array($empLeavesResult)){
+									       			$empLeavesUsed += intval($empLeaveCal['days']);
+									       		}
+									       		
+									       		$remainingLeaves = $leaves - $empLeavesUsed;
+								       		
+								       		
 							       		?>
 							       		 <tr>
 							       		<td><?php echo  $leavename;?></td>
 							       		<td><?php echo $leaves; ?></td>
 							       		<td><?php echo  $empLeavesUsed;?></td>
 							       		<td><?php echo  $remainingLeaves;?></td>
-							       		<td><center><form   action="UserApplyLeaves.php" method="post"><input type="hidden" name="remaining" value="<?php echo $remainingLeaves; ?>" > <input type="hidden" name="leaveType" value="<?php echo $leavename; ?>" > <button type="submit"  name="login-submit" id="login-submit" <?php if($remainingLeaves <= 0){ echo "disabled";} ?> class="btn btn-default">Apply</button></form></center></td>
+							       		<td><center><form   action="UserApplyLeaves.php" method="GET"><input type="hidden" name="remaining" value="<?php echo $remainingLeaves; ?>" > <input type="hidden" name="leaveType" value="<?php echo $leavename; ?>" > <button type="submit"  name="login-submit" id="login-submit" <?php if($remainingLeaves <= 0){ echo "disabled";} ?> class="btn btn-default">Apply</button></form></center></td>
 							       		</tr>
 							       		
 							      <?php
 									 	}
-							       		
+							       	}else{
+											echo  "<tr><td style='color : red;' colspan='5'>No records to display</td></tr>"; 		
+									 	}
 							       	
 							       	?> 
 							    </tbody>
@@ -271,12 +274,15 @@
                                     $elid = htmlspecialchars($_POST['elid']);
                                     $cancelQuery = "UPDATE empLeaves SET status='Cancelled by user' , days='0' WHERE elid='$elid'";
                                     $cancelResult = mysql_query($cancelQuery);
+                                    
+                                    $cancelledmsg = "Status has been updated successfully.";
+                                   
                                 }
                         
 								$leaveStatusQuery = "SELECT * FROM empLeaves WHERE userid='$userId'";
 								$leavesResult = mysql_query($leaveStatusQuery);
                         
-                        
+                        		
                                 
                                
 						?>
@@ -284,7 +290,7 @@
 										
 						<div class="tab-pane " id="LeaveStatus">
 							<div class="container" style="margin-bottom:100px">
-								
+								<center><p style="color: green;"><?php if(isset($cancelledmsg)){ echo $cancelledmsg; }else {echo "";}?></p></center>
 								<div class="col-md-12 table-responsive">
 								<center style="margin-bottom:50px;"><strong><h3 style="font-weight:700">Leave Status</h3></strong></center>
                                   <?php   if($_SESSION['user']['ApplyLeaves'] == '1'){ ?>  
@@ -305,6 +311,8 @@
 							     
 							     
                                     <?php
+                                    if(mysql_num_rows($leavesResult) >0){
+                                    	
                                             while($statusLeaves = mysql_fetch_array($leavesResult)){
                                                 ?>
                                                         <tr>
@@ -335,6 +343,11 @@
                                                             
                                                         </tr>
                                             <?php }
+                                    }else{
+                                    
+                                    	echo  "<tr><td style='color : red;' colspan='8'>No records to display</td></tr>";
+                                    }
+                                
                                     ?>
 							     
 							    </tbody>
@@ -367,6 +380,8 @@
 	                                                                    $approveUpdateQuery = "UPDATE empLeaves SET status='$status' WHERE elid='$adminElid'";
 	                                                                    $approveUpdateResult = mysql_query($approveUpdateQuery);
                                                                     }
+                                                                    
+                                                                    $updateLeaveMsg = "Status has been updated successfully.";
                                                                 }
                                 
                                 $alQuery = "SELECT * FROM empLeaves WHERE approvalBy='$userId'";
@@ -376,6 +391,10 @@
                         
 						<div class="tab-pane " id="ApproveLeaves">
 							<div class="container" style="margin-bottom:100px">
+							<center><div class="alert alert-success">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+   <center class="message"> <label style="font-size: 14px;color:green;"><?php if(isset($updateLeaveMsg)){echo  $updateLeaveMsg;}else{echo '';}?></label></center>
+  </div></center>
 								<div class="col-md-12 table-responsive">
 								<center style="margin-bottom:50px;"><strong><h3 style="font-weight:700">Approve Leaves</h3></strong></center>
                                      <?php    if($_SESSION['user']['ApproveLeaves'] == '1'){ ?>
@@ -399,6 +418,7 @@
 							     
 							     
 							     <?php
+							     	if(mysql_num_rows($resultApprove)){
                                         while($alRow = mysql_fetch_array($resultApprove)){?>
                                                     <tr>
                                                         <form action="UserLeaves.php?class=3" method="post">
@@ -445,7 +465,11 @@
                                                         <td><center><input type="hidden" name="adminElid" value="<?php echo $alRow['elid']; ?>"><button <?php if($elResult){ echo  'disabled';}?> type="submit" name="approveLeavessubmit" id="login-submit"  class="btn btn-default">Save</button></center></td>
                                                         </form>
                                                     </tr>
-                                     <?php   }       
+                                     <?php   }
+                                     
+							     	}else{
+							     		echo  "<tr><td style='color : red;' colspan='10'>No records to display</td></tr>";
+							     	}
                                     ?>
 							    </tbody>
 							    </table>

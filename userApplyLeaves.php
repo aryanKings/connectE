@@ -13,9 +13,9 @@ $userId = $_SESSION['user']['UserId'];
 $companyCode = $_SESSION['user']['code'];
 
 
-if(isset($_POST['leaveType'])){
-	$leaveType = htmlspecialchars($_POST['leaveType']);
-	$remainingLeaves = htmlspecialchars($_POST['remaining']);
+if(isset($_GET['leaveType'])){
+	$leaveType = htmlspecialchars($_GET['leaveType']);
+	$remainingLeaves = htmlspecialchars($_GET['remaining']);
 }else{
 	header("Location:UserLeaves.php?msg=no leave type found");
 }

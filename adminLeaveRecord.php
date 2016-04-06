@@ -50,6 +50,26 @@
 }
 </style>
 <style>
+ .btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+    cursor: not-allowed;
+    filter: alpha(opacity=65);
+      background-color: #073A65;
+    border-color: #073A65;
+    color:white;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    opacity: .65;
+}
+  .btn.disabled:hover, .btn[disabled]:hover, fieldset[disabled] .btn:hover {
+    cursor: not-allowed;
+    filter: alpha(opacity=65);
+      background-color:white ;
+    border-color: #073A65;
+    color:#073A65;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    opacity: .65;
+}
 	th {
     white-space: nowrap;
     text-align:center;
@@ -515,10 +535,17 @@
                                     
                                     $getStatus = htmlspecialchars($_POST['status']);
                                    
+                                    if($getStatus == 'Rejected'){
+                                    	$updateStatus ="UPDATE empLeaves SET status='$getStatus' AND days='0' WHERE elid='$getElid'";
+                                    	
+                                    	$updateResult = mysql_query($updateStatus);
+                                    }else{
+                                    	$updateStatus ="UPDATE empLeaves SET status='$getStatus' WHERE elid='$getElid'";
+                                    	
+                                    	$updateResult = mysql_query($updateStatus);
+                                    }
                                     
-                                    $updateStatus ="UPDATE empLeaves SET status='$getStatus' WHERE elid='$getElid'";
-                                    
-                                    $updateResult = mysql_query($updateStatus);
+                                    $updatedMsg = "Status has been updated successfully.";
                                 }
 								$username =  $_SESSION['company']['username'];
 								$approveLeaveSeeQuery = "SELECT * FROM empLeaves WHERE approvalBy='$username'";
@@ -529,6 +556,13 @@
 						?>
 						<div class="tab-pane" id="ApproveLeaves">
 							<div class="container" style="margin-bottom:100px">
+							
+							
+							<!--  message -->
+							<center><p style="color: green;"><?php if(isset($updatedMsg)){echo $updatedMsg; }else{echo '';}?></p></center>
+							
+							
+							
 								<div class="col-md-12 table-responsive">
 								<center style="margin-bottom:50px;"><strong><h3 style="font-weight:700">Approve Leaves</h3></strong></center>
 							<table  class="table table-striped table-bordered table-hover table-condensed">
@@ -538,7 +572,7 @@
 							    	<th>Leave Type</th>
 							    	<th>Start Date</th>
 							    	<th>End Date</th>
-							    	<th>Half/Full Day</th>
+							    
 							    	<th>Leave days</th>
 							    	<th>Subject</th>
 							    	<th>Reason</th>
@@ -564,7 +598,7 @@
                                                             <td><?php echo  $approveLeaves['leavetype']; ?> </td>
                                                             <td><?php echo  $approveLeaves['startdate']; ?> </td>
                                                             <td><?php echo  $approveLeaves['enddate']; ?> </td>
-                                                            <td><?php echo  $approveLeaves['halffull']; ?> </td>
+                                                           
                                                             <td><?php echo  $approveLeaves['days']; ?> </td>
                                                             <td><?php echo  $approveLeaves['subject']; ?> </td>
                                                             <td><?php echo  $approveLeaves['reason']; ?> </td>
