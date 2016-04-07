@@ -101,36 +101,39 @@ if($approvingEmployeeId == ''){
         }
     }
     
+     /*
+     * get Days       
+     */
+    function getDays(){
+        var start =  document.getElementById("Startdate").value;
+        var end  =  document.getElementById("Enddate").value;
     
-$(document).ready(function() {
-  
-$( "#Startdate,#Enddate" ).datepicker({
-changeMonth: true,
-changeYear: true,
-firstDay: 1,
-dateFormat: 'yy-mm-dd',
-})
+        $.post("leavesDaysSpecify.php",{startDate:start,endDate:end},function(data){
+                document.getElementById("days").value = data;
+        });
+    }
+    
+    
+    
+    
+     function checkAlreadyApplied(){
+            var start =  document.getElementById("Startdate").value;
+            var end = document.getElementById("Enddate").value;
+            var user = "<?php echo  $userId; ?>";
+            var companyCode = "<?php echo  $companyCode;?>";
+            
+            
+            $.post("checkAlreadyLeaveApplied.php",{startDate:start,endDate:end,userId:user,code:companyCode},function(data){
+                if(data == 1){
+                    document.getElementById("login-submit").disabled = true;
+                    document.getElementById("msgdate").innerHTML = "Leave has been already applied for the selected dates";
+                }else{
+                    document.getElementById("login-submit").disabled = false;
+                    document.getElementById("msgdate").innerHTML = "";
+                }
+            });
+        }
 
-$( "#Startdate" ).datepicker({ dateFormat: 'yy-mm-dd' });
-$( "#Enddate" ).datepicker({ dateFormat: 'yy-mm-dd' });
-
-$('#Enddate').change(function() {
-    var start = $('#Startdate').datepicker('getDate');
-    var end   = $('#Enddate').datepicker('getDate');
-
-if (start<=end) {
-    var days   = ((end - start)/1000/60/60/24)+1;
-$('#days').val(days);
-}
-else {
-  var mgs = document.getElementById("msgdate");
-    mgs.innerHTML= "Start date should be greater than end date.";
-  $('#Startdate').val("");
-  $('#Enddate').val("");
-    $('#days').val("");
-}
-}); //end change function
-}); //end ready
 </script>
   </head>
   <body>
@@ -237,33 +240,49 @@ else {
                                        <input  type="text"  id="LeaveType" name="LeaveType" Readonly oninvalid="InvalidMsgError(this);" required="required"  value="<?php echo $leaveType;?>" oninput="InvalidMsgError(this); "  placeholder="Enter Leave type" maxlength="50"  class="form-control" />
                                         </div>
                        <center> <p id="msgdate" style="font-size: 14px;color:Red;"></p> </center>          	
-  <label for="Startdate">Start date*</label>
+ 
+<label for="Startdate">Start date*</label>
    
   <div style="margin-bottom: 12px" id="maximumemployee" class="input-group">
   <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-					<input class="widthdate form-control" style="background-color: white;"  type="text" oninvalid="InvalidMsgsdate(this);"  oninput="InvalidMsgsdate(this);"   required="required" placeholder="Select date" name="Startdate" id="Startdate"  value="" size="16" >
-									
-									
-	</div>
-	 <label for="Enddate">End date*</label>
+		<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+										<input class="widthdate form-control" style="background-color: white;"  type="text" oninvalid="InvalidMsgsdate(this);"  oninput="InvalidMsgsdate(this);"   required="required" placeholder="Select date" name="Startdate" id="Startdate"  value="" size="16" >
+										<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+									</div>
+	</div>	
+<label for="Enddate">End date*</label>
    
   <div style="margin-bottom: 12px" id="maximumemployee" class="input-group">
   <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-		
-										<input class="widthdate form-control" style="background-color: white;"  type="text" oninvalid="InvalidMsgsdate(this);"  oninput="InvalidMsgsdate(this);"   required="required" placeholder="Select date" name="Enddate" id="Enddate"  value="" size="16" >
-									
-	</div>
+		<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+										<input class="widthdate form-control" style="background-color: white;"  type="text" oninvalid="InvalidMsgsdate(this);"  oninput="InvalidMsgsdate(this);"   required="required" placeholder="Select date" name="Enddate" id="Enddate" onfocusout="checkAlreadyApplied()" value="" size="16" >
+										<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+									</div>
+	</div>	
+	
+<script>
+        
+       
+    
+   
+    
+</script>
+    
+    
+    
  <p style="color:red;" id="daysmsg"></p>
 	 <label for="days">No of days*</label>
   <div style="margin-bottom: 12px" class="input-group">
      
 		<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-		<input type="text" name="days" id="days" maxlength="3" onfocusout="checkHolidays()" oninvalid="InvalidMsglength(this);"  oninput="InvalidMsglength(this);" required="required" tabindex="1" class="form-control" placeholder="Enter Leave days" value="">
+		<input type="text" name="days" id="days" readonly maxlength="3" onfocusout="" oninvalid="InvalidMsglength(this);"  oninput="InvalidMsglength(this);" required="required" tabindex="1" class="form-control" placeholder="Enter Leave days" value="">
 	</div>	
 		 <label for="subject">Subject*</label>
   <div style="margin-bottom: 12px" class="input-group">
 		<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-		<input type="text"  name="subject" id="subject" maxlength="50" minlength="4" oninvalid="InvalidMsglength(this);"  oninput="InvalidMsglength(this);" required="required" tabindex="1" class="form-control" placeholder="Enter subject" value="">
+		<input type="text"  name="subject" id="subject" onfocus="checkAlreadyApplied();getDays();checkHolidays()" maxlength="50" minlength="4" oninvalid="InvalidMsglength(this);"  oninput="InvalidMsglength(this);" required="required" tabindex="1" class="form-control" placeholder="Enter subject" value="">
 	</div>	
 	<label for="Reason">Reason*</label>
   <div style="margin-bottom: 12px" class="input-group">
