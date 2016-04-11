@@ -1,8 +1,3 @@
-
-Currently editing:  
-/home/connecte/public_html/user/UserLogBook.php
- Encoding:    Reopen  Switch to Code Editor     Close  Save
-
 <?php 
 	session_start();
 
@@ -36,9 +31,11 @@ Currently editing:
 <style>
 	th {
     white-space: nowrap;
+    text-align: center;
 }
 	td {
     white-space: nowrap;
+    text-align: center;
 }
 table{border: 1px solid #000;}
 </style>
@@ -224,7 +221,7 @@ $resultQuery = mysql_query($query);
 								<div class="row">
 								
 								   <div class="col-md-6">
-<div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+<div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; border-radius: 4px; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
     <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
     <span id="ranges"><?php if(isset($search_term)){ echo $search_term; } ?></span><b class="caret"></b>
     <input type="hidden" name="dateranges" id="dateranges" />
@@ -253,17 +250,7 @@ $resultQuery = mysql_query($query);
 			</thead>
 			<tbody>
 			
-			<?php 
-			/*
-			 *if no found isset 
-			 */
-				if(isset($noFound)){
-							 if(mysql_num_rows($resultQuery) <= 0){
-							echo "<td colspan='5'; style='font-size: 14px;color:Red;'>$noFound</td> ";
-						
-								}
-				}
-			?>
+			
 			
 			
 			 <?php
