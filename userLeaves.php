@@ -139,7 +139,9 @@
   <li class="headerlinks"  ><a style=""  href="UserHome.php" ><span class="glyphicon glyphicon-home"></span> &nbsp Home</a></li>
 
       <li class="headerlinks"  ><a style=""  href="UserMyProfile.php" ><span  class="glyphicon glyphicon-user"></span> &nbsp My Profile</a></li>
+        <?php if($_SESSION['user']['ViewLogs'] == '1'){?>
         <li class="headerlinks"  ><a style=""  href="UserLogBook.php" ><span  class="glyphicon glyphicon-book"></span> &nbsp Log Book</a></li>
+        <?php }?>
         <li class="headerlinks"  ><a style=""  href="UserLeaves.php" ><span  class="glyphicon glyphicon-list-alt"></span> &nbsp Leaves</a></li>	
      <li class="dropdown headerlinks navbar-right">
        <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="width: 193px;"  ><span  class="glyphicon glyphicon-user"></span> &nbsp My Account <span class="caret"></span></a>
@@ -391,10 +393,7 @@
                         
 						<div class="tab-pane " id="ApproveLeaves">
 							<div class="container" style="margin-bottom:100px">
-							<center><div class="alert alert-success">
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-   <center class="message"> <label style="font-size: 14px;color:green;"><?php if(isset($updateLeaveMsg)){echo  $updateLeaveMsg;}else{echo '';}?></label></center>
-  </div></center>
+							<center><p style="color: green;"><?php if(isset($updateLeaveMsg)){ echo $updateLeaveMsg; }else {echo "";}?></p></center>
 								<div class="col-md-12 table-responsive">
 								<center style="margin-bottom:50px;"><strong><h3 style="font-weight:700">Approve Leaves</h3></strong></center>
                                      <?php    if($_SESSION['user']['ApproveLeaves'] == '1'){ ?>
@@ -518,7 +517,7 @@
 							    </table>
 							    <?php }else{
 							    	
-							    	echo "<h6>No Holidays Found </h6>";
+							    	echo "<center><h6 style='color:red; font-size:14px;'>No Holidays Found </h6></center>";
 							    }
 							    ?>
 							</div>	

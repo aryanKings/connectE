@@ -66,7 +66,9 @@
   <li class="headerlinks"  ><a style=""  href="UserHome.php" ><span class="glyphicon glyphicon-home"></span> &nbsp Home</a></li>
 
       <li class="headerlinks"  ><a style=""  href="UserMyProfile.php" ><span  class="glyphicon glyphicon-user"></span> &nbsp My Profile</a></li>
+        <?php if($_SESSION['user']['ViewLogs'] == '1'){?>
         <li class="headerlinks"  ><a style=""  href="UserLogBook.php" ><span  class="glyphicon glyphicon-book"></span> &nbsp Log Book</a></li>
+          <?php }?>
           <li class="headerlinks"  ><a style=""  href="UserLeaves.php" ><span  class="glyphicon glyphicon-list-alt"></span> &nbsp Leaves</a></li>
      <li class="dropdown headerlinks navbar-right">
        <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="width: 193px;"  ><span  class="glyphicon glyphicon-user"></span> &nbsp My Account <span class="caret"></span></a>
@@ -140,14 +142,17 @@
         		$approveEmpId = $_SESSION['user']['ApprovingEmployeeId'];
         		
         		if($approveEmpId == ''){
+        			
         			$approverQuery = mysql_query("SELECT * FROM company WHERE code='$companyCode'");
         			$approval = mysql_fetch_array($approverQuery);
         			$approvalName = $approval['username'];
         		}else{
+        			
         			$approverQuery = mysql_query("SELECT * FROM AddUser WHERE UserId='$approveEmpId'");
         			$approval = mysql_fetch_array($approverQuery);
         			$approvalName = $approval['UserName'];
         		}
+        		
         		
         ?>
        	<td><?php echo $approvalName; ?></td>
