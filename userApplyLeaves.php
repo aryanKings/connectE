@@ -84,6 +84,30 @@ if($approvingEmployeeId == ''){
 }
 </style>
 <script>
+
+
+function getDaysAndCheck(){
+    var start =  document.getElementById("Startdate").value;
+    var end =  document.getElementById("Enddate").value;
+    
+    $.post("leavesDaysSpecify.php",{startDate:start,endDate:end},function(data){
+        var days =  data;
+        document.getElementById("days").value =  data;
+         var validDays = parseInt("<?php echo $remainingLeaves; ?>");
+         var days2 = parseInt(days);
+        
+        if(days2 > validDays){
+            document.getElementById("login-submit").disabled =  true;
+            document.getElementById("daysmsg").innerHTML = "Enter days more than acceptance";
+        }else{
+            document.getElementById("login-submit").disabled =  false;
+            document.getElementById("daysmsg").innerHTML = "Enter days more than acceptance";
+        }
+        
+    });
+}
+
+
     
     /*
     *checking remaining leaves
@@ -117,13 +141,13 @@ if($approvingEmployeeId == ''){
     
     
      function checkAlreadyApplied(){
-            var start =  document.getElementById("Startdate").value;
-            var end = document.getElementById("Enddate").value;
+            var startDates =  document.getElementById("Startdate").value;
+            var endDates = document.getElementById("Enddate").value;
             var user = "<?php echo  $userId; ?>";
             var companyCode = "<?php echo  $companyCode;?>";
             
             
-            $.post("checkAlreadyLeaveApplied.php",{startDate:start,endDate:end,userId:user,code:companyCode},function(data){
+            $.post("checkAlreadyLeaveApplied.php",{startDate:startDates,endDate:endDates,userId:user,code:companyCode},function(data){
                 if(data == 1){
                     document.getElementById("login-submit").disabled = true;
                     document.getElementById("msgdate").innerHTML = "Leave has been already applied for the selected dates";
@@ -134,6 +158,11 @@ if($approvingEmployeeId == ''){
             });
         }
 
+     function checks(){
+    	 checkAlreadyApplied();
+    	 getDays();
+    	 checkHolidays();
+     }
 </script>
   </head>
   <body>
@@ -258,7 +287,7 @@ if($approvingEmployeeId == ''){
   <div style="margin-bottom: 12px" id="maximumemployee" class="input-group">
   <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 		<div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-										<input class="widthdate form-control" style="background-color: white;"  type="text" oninvalid="InvalidMsgsdate(this);"  oninput="InvalidMsgsdate(this);"   required="required" placeholder="Select date" name="Enddate" id="Enddate" onfocusout="checkAlreadyApplied()" value="" size="16" >
+										<input class="widthdate form-control" style="background-color: white;"  type="text" oninvalid="InvalidMsgsdate(this);"  oninput="InvalidMsgsdate(this);"   required="required" placeholder="Select date" name="Enddate" id="Enddate"  value="" size="16" >
 										<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
 										<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 									</div>
@@ -284,7 +313,7 @@ if($approvingEmployeeId == ''){
 		 <label for="subject">Subject*</label>
   <div style="margin-bottom: 12px" class="input-group">
 		<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-		<input type="text"  name="subject" id="subject" onfocus="checkAlreadyApplied();getDays();checkHolidays()" maxlength="50" minlength="4" oninvalid="InvalidMsglength(this);"  oninput="InvalidMsglength(this);" required="required" tabindex="1" class="form-control" placeholder="Enter subject" value="">
+		<input type="text"  name="subject" id="subject" onfocus="getDaysAndCheck()" onfocusout="checkAlreadyApplied()" maxlength="50" minlength="4" oninvalid="InvalidMsglength(this);"  oninput="InvalidMsglength(this);" required="required" tabindex="1" class="form-control" placeholder="Enter subject" value="">
 	</div>	
 	<label for="Reason">Reason*</label>
   <div style="margin-bottom: 12px" class="input-group">

@@ -8,7 +8,7 @@
 		require 'connect.php';
 		$database =  new connect();
 		
-		$query = "SELECT * FROM empLeaves WHERE code='$companyCode' AND userid='$userId' AND (startdate BETWEEN '$startDate' AND '$endDate' OR enddate BETWEEN '$startDate' AND '$endDate')";
+		$query = "SELECT * FROM empLeaves WHERE code='$companyCode' AND userid='$userId' AND(NOT(status='Cancelled by user')) AND (startdate BETWEEN '$startDate' AND '$endDate' OR enddate BETWEEN '$startDate' AND '$endDate')";
 		
 		$resultQuery = mysql_query($query);
 		
