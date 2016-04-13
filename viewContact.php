@@ -7,10 +7,12 @@
 	}
 
 ?>
+
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <title>View Company Details</title>
+ <title>View Contact Messages</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="/images/logofav.ico" type="image/x-icon" />
@@ -27,11 +29,11 @@
 
 	th {
     white-space: nowrap;
-    text-align:center;
+text-align:center;
 }
 	td {
     white-space: nowrap;
-        text-align:center;
+text-align:center;
 }
 .pagination>li>a, .pagination>li>span {
     position: relative;
@@ -87,7 +89,35 @@ table{border: 1px solid #000;}
   </ul>
     </div>
 </nav>
-<div class="container" id="mainborder" style="margin-top:30px;margin-bottom:71px;">
+<div class="main">
+<div class="container" style="margin-bottom:50px;">
+<?php
+    	if(isset($_POST['removeSubmit'])){
+        	  $dbhost = 'localhost';
+            $dbuser = 'connecte_admin';
+            $dbpass = 'YBSwb#2015';
+            $conn = mysql_connect($dbhost, $dbuser, $dbpass);
+            
+            if(! $conn ) {
+               die('Could not connect: ' . mysql_error());
+            }
+				
+            $ContactMessageId = $_POST['ContactMessageId'];
+          
+            $sql = " DELETE FROM ContactMessages WHERE CM_Id = $ContactMessageId" ;
+            mysql_select_db('connecte_timer');
+            $retval = mysql_query( $sql, $conn );
+            
+            if(! $retval ) {
+               die('Could not delete data: ' . mysql_error());
+            }  ?><div class="alert alert-success">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+   <center class="message"> <label style="font-size: 14px;color:green;"><?php echo "Message has been deleted successfully";?></label></center>
+  </div><?php
+            mysql_close($conn);
+         }
+		?>					 	   
+	 
  <center><?php 
 	
 
@@ -151,14 +181,14 @@ table{border: 1px solid #000;}
 								$pageNumber = ($pageNumber*5)-5;
 							}
 							
-							$query = "SELECT * FROM company  ORDER BY CM_Id DESC LIMIT $pageNumber,5 ";
+							$query = "SELECT * FROM ContactMessages  ORDER BY CM_Id DESC  LIMIT $pageNumber,5 ";
 							if(isset($_POST['search'])){
 
 $search_term = htmlspecialchars($_POST['search_box']);
 
 
 
-$query = "SELECT * FROM company   WHERE code='$search_term'  ORDER BY CM_Id DESC LIMIT $pageNumber,5";
+$query = "SELECT * FROM ContactMessages   WHERE code='$search_term' ORDER BY CM_Id DESC LIMIT $pageNumber,5";
 
 $checkQuery= mysql_query($query);
 if(mysql_num_rows($checkQuery) <= 0){
@@ -177,7 +207,7 @@ if(mysql_num_rows($checkQuery) <= 0){
 
 
 
-$query = "SELECT * FROM company  LIMIT $pageNumber,5 ";
+$query = "SELECT * FROM ContactMessages  ORDER BY CM_Id DESC  LIMIT $pageNumber,5 ";
 
 
 }
@@ -195,7 +225,7 @@ $resultQuery = mysql_query($query);
 								 */
 
 
-							$pagesTotalCount = "SELECT * FROM company  ORDER BY CM_Id DESC";
+							$pagesTotalCount = "SELECT * FROM ContactMessages";
 
 							$resultPagesTotalCount = mysql_query($pagesTotalCount);
 							$pages = mysql_num_rows($resultPagesTotalCount);
@@ -209,82 +239,90 @@ $resultQuery = mysql_query($query);
 
 
 							?>
+ <center> <strong><h3 style="font-weight: 700;margin-top:10px;margin-bottom:50px">Contact Messages</h3></strong></center>
+					
+				 <center><?php 
+	
 
+
+	
+
+		if(isset($_GET['msg'])){
+			
+			$msg = $_GET['msg'];
+			$httphost = $_SERVER['HTTP_HOST'];
+			$link = "http://$httphost/"."popup.php?msg=$msg";
+			//echo "<script>window.open('$link','popup','width=400,height=200,scrollbar=yes' );</script>";
+			//echo "<script>window.open('$link')</script>";
+			?>
+			<div class="alert alert-danger">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <center class="message"> <label style="font-size: 14px;color:Red;"><?php echo $msg;?></label></center> 
+  </div>
+		 <?php	
+		}?></center>
+		 <center><?php 
+		
+
+		if(isset($_GET['msg1'])){
+			
+			$msg1 = $_GET['msg1'];
+			$httphost = $_SERVER['HTTP_HOST'];
+			$link = "http://$httphost/"."popup.php?msg=$msg";
+			//echo "<script>window.open('$link','popup','width=400,height=200,scrollbar=yes' );</script>";
+			//echo "<script>window.open('$link')</script>";
+			?>
+		<div class="alert alert-success">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+   <center class="message"> <label style="font-size: 14px;color:green;"><?php echo $msg1;?></label></center>
+  </div>
+		 <?php	
+		}?></center>			 
 							
-							 <form name="search_form" method="POST" style="margin-top:10px;" action="ViewCompany.php">
-							 	   
-	  <center> <strong><h3 style="font-weight: 700;margin-bottom:50px">Company Details</h3></strong></center>
-							 
-							 <div class="container">
-								<div class="row">
-								
-									<div class="col-md-3">
-									<div class="search">
-							<input type="text" name="search_box" oninvalid="InvalidMsg(this);" oninput="InvalidMsg(this);" required="required" class="form-control input-sm" maxlength="10" placeholder="Enter Company code" />
-							 
-							</div>
-							</div>
-							<div style="width: 12.666667%;" class="col-md-2">
-							 <button type="submit"  name="search" style="width:100px;" class="btn btn-default">Search</button>							</div></form><form name="search_form" method="POST"  action="ViewCompany.php">
-							<div style="width: 12.666667%;" class="col-md-2">
-							 <button type="submit" name="reset"  style="width:100px;" class="btn btn-default">Reset</button>
-							</div>
-							</div>
-							</div>
-							 </form>
+							
 							 <div class="table-responsive" style="margin-top:30px;">
 							 <table class="table table-striped"  id="someid">
 							
 			<thead>
-			  <tr>
-			  					 <th ><strong>Edit</strong></th> 
-								 <th ><strong>Company Code</strong></th> 
-								 <th><strong>Company Name</strong> </th> 
-								   <th><strong>Company Type</strong></th> 
-								   <th> <strong>Company Address</strong></th> 
-								   <th ><strong>Company Phone number</strong></th> 
-								 <th><strong>Contact Person Name</strong> </th> 
-								   <th><strong>CP Email Address</strong></th>
-								    <th ><strong>CP Mobile Number</strong></th> 
-								 <th><strong>No of users</strong> </th> 
-								   <th><strong>Admin Username</strong></th>  
+			  <tr>					 <th><strong>Time</strong> </th> 
+			  					 <th ><strong>Name</strong></th> 
+								 <th ><strong>Email</strong></th> 
+								 <th><strong>Subject</strong></th> 
+								   <th> <strong>Message</strong></th> 
+
+                                                                    <th> <strong>Delete</strong></th> 
 								 </tr>
 			</thead>
 			<tbody>
 			
-			<?php 
-			/*
-			 *if no found isset 
-			 */
-				if(isset($noFound)){
-							 if(mysql_num_rows($resultQuery) <= 0){
-							echo "<td style='font-size: 14px;color:Red;'>$noFound</td> ";
-									for($i = 0; $i < 11;$i++){
-										echo "<td></td>";
-									}
-								}
-				}
-			?>
 			
 			
-			 <?php while($row = mysql_fetch_array($resultQuery)){ ?>
+			
+			 <?php
+			 if(mysql_num_rows($resultQuery) > 0){
+			 	
+			 
+			 while($row = mysql_fetch_array($resultQuery)){ ?>
 							<tr>
-								 <td><a href="EditCompany.php?cmp=<?php echo $row['cmpId'];?>">Edit</a></td> 
-								 <td><?php echo $row['code'];?></td>
-								 <td><?php echo $row['name'];?></td> 
-								
-								 <td><?php echo $row['type'];?></td> 
-								  <td><?php echo $row['address'];?></td> 
-								 <td><?php echo $row['number'];?></td> 
-								  <td><?php echo $row['personname'];?></td> 
-								 <td><?php echo $row['personemail'];?></td>
-								   <td><?php echo $row['personnumber'];?></td> 
-								 <td><?php echo $row['numberUsers'];?></td> 
-								  <td><?php echo $row['username'];?></td> 
 								 
+								  <td><?php echo $row['time'];?></td> 
+								 <td><?php echo $row['name'];?></td>
+								   <td><?php echo $row['email'];?></td> 
+								 <td><?php echo $row['subject'];?></td> 
+								  <td><?php echo $row['message'];?></td> 
+								 <td><center><form action="ViewContact.php" method="post"> <input type="hidden" name="ContactMessageId" value="<?php echo $row['CM_Id'];?>" ><button type="submit" name="removeSubmit" id="login-submit"  class="btn btn-default">Remove</button></form></center></td>
 							</tr>
 							  
-								 <?php } ?>
+								 <?php } 
+			 }else{
+			 	if(isset($noFound)){
+			 		echo "<tr><td style='color:red;' colspan='6'>$noFoundy</td></tr>";
+			 	}else{
+			 		echo "<tr><td style='color:red;' colspan='6'>No Records to display</td></tr>";
+			 	}
+			 	
+			 }
+								 ?>
 			</tbody>
 		  </table>
 						
@@ -313,7 +351,7 @@ $resultQuery = mysql_query($query);
             <?php 
             
             	for($i = 1;$i <= $pageCount; $i++){
-            		?>  <li><a href="ViewCompany.php?page=<?php echo $i;?>"><?php  echo $i; ?></a></li> <?php 
+            		?>  <li><a href="ViewContact.php?page=<?php echo $i;?>"><?php  echo $i; ?></a></li> <?php 
             	}
             
             ?>

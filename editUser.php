@@ -379,7 +379,7 @@ function checkEmpIdApprove(){
       Admin
     </label> 
     <label class="radio-inline" for="radios-1">
-      <input type="radio" name="approvings" id="radios-1" onclick="validateapproveruser()" value="user">
+      <input type="radio" name="approvings" id="radios-1" <?php if($row['ApprovingEmployeeId'] != ''){echo 'checked';}?>  onclick="validateapproveruser()" value="user">
       User
     </label> 
     </div>

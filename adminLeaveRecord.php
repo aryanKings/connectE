@@ -636,7 +636,7 @@
                                     <?php    }
                                     
                                         }else{ ?>
-                                        	<tr><td style="color: red;" colspan="10">No Records to display<td></tr>
+                                        	<tr><td style="color: red;" colspan="9">No Records to display<td></tr>
                                        <?php  }
                                     
                                 ?>
